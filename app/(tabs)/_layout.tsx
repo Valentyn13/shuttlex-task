@@ -4,10 +4,10 @@ const TabsLayout = () => {
     return (
         <Tabs
             screenOptions={{
-                headerShown: true,
+                headerShown: false,
             }}
         >
-            <Tabs.Screen name="index" options={{ tabBarLabel: 'App' }} />
+            <Tabs.Screen name="index" options={{ tabBarLabel: 'Chats' }} />
             <Tabs.Screen
                 name="settings/index"
                 options={{ tabBarLabel: 'Settings' }}

@@ -5,12 +5,13 @@ import {
     type UnknownAction,
 } from '@reduxjs/toolkit';
 
-import { exampleReducer } from '../slices';
+import { chatReducer, exampleReducer } from '../slices';
 
 import { chatsApi, exampleApi } from '@api/index.ts';
 
 export type RootReducer = {
     example: ReturnType<typeof exampleReducer>;
+    chats: ReturnType<typeof chatReducer>;
 };
 
 type ExtraArguments = {
@@ -32,6 +33,7 @@ export class Store {
             devTools: true,
             reducer: {
                 example: exampleReducer,
+                chats: chatReducer,
             },
             middleware: (getDefaultMiddleware) => {
                 return getDefaultMiddleware({

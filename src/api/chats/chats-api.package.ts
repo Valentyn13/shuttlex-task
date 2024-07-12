@@ -27,7 +27,6 @@ export class ChatsApi extends HttpApi {
                 hasAuth: false,
             },
         );
-
         return await response.json<User>();
     }
 
@@ -40,7 +39,6 @@ export class ChatsApi extends HttpApi {
                 hasAuth: false,
             },
         );
-
         return await response.json<ChatWithoutMessagesList>();
     }
 
@@ -53,7 +51,6 @@ export class ChatsApi extends HttpApi {
                 hasAuth: false,
             },
         );
-
         return await response.json<Chat>();
     }
 

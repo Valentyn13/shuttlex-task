@@ -9,28 +9,6 @@ import {
     UserWithoutPassword,
 } from '../../../shared/index.ts';
 
-const getExampleData = createAsyncThunk<
-    {
-        userId: number;
-        id: number;
-        title: string;
-        completed: boolean;
-    },
-    void,
-    AsyncThunkConfig
->(`${SliceName.EXAMPLE}/get-data`, async (_, { extra, rejectWithValue }) => {
-    try {
-        const { exampleApi } = extra;
-        const a = await exampleApi.getPositions();
-
-        return a;
-    } catch (error) {
-        return rejectWithValue(
-            `Error while fetching data ${JSON.stringify(error)}`,
-        );
-    }
-});
-
 const auth = createAsyncThunk<
     User,
     { name: string; password: number },
@@ -68,6 +46,7 @@ const getChat = createAsyncThunk<Chat, void, AsyncThunkConfig>(
             const chats = await chatsApi.getChat();
             return chats;
         } catch (error) {
+            console.log(error);
             return rejectWithValue(`Error, ${JSON.stringify(error)}`);
         }
     },
@@ -94,7 +73,7 @@ const createChat = createAsyncThunk<
 });
 
 const deleteChat = createAsyncThunk<number, number, AsyncThunkConfig>(
-    `${SliceName.CHATS}/create`,
+    `${SliceName.CHATS}/delete`,
     async (id, { extra, rejectWithValue }) => {
         try {
             const { chatsApi } = extra;
@@ -106,4 +85,4 @@ const deleteChat = createAsyncThunk<number, number, AsyncThunkConfig>(
     },
 );
 
-export { auth, createChat, deleteChat, getAllChats, getChat, getExampleData };
+export { auth, createChat, deleteChat, getAllChats, getChat };

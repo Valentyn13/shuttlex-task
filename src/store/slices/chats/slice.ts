@@ -39,6 +39,7 @@ const { reducer, actions } = createSlice({
         });
         buider.addCase(getChat.fulfilled, (state, action) => {
             state.currentChat = action.payload;
+            console.log('success');
             state.state = SliceState.SUCCESS;
         });
         buider.addCase(deleteChat.fulfilled, (state, action) => {
@@ -71,7 +72,8 @@ const { reducer, actions } = createSlice({
                 deleteChat.rejected,
                 createChat.rejected,
             ),
-            (state) => {
+            (state, action) => {
+                console.log(action.payload);
                 state.state = SliceState.ERROR;
             },
         );

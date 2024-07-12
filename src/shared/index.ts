@@ -23,4 +23,4 @@ export {
     type ValueOf,
 } from './constants/types/types.ts';
 export { useAppDispatch, useAppSelector } from './lib/lib.ts';
-export { Button } from './ui/index.ts';
+export { Button, Container } from './ui/index.ts';
