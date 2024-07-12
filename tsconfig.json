@@ -7,10 +7,10 @@
         "paths": {
             "@shared/*": ["./src/shared/*"],
             "@api/*": ["./src/api/*"],
-            "@screens/*" : ["./src/screens/*"],
+            "@screens/*": ["./src/screens/*"],
             "@assets/*": ["./assets/*"],
-            "@store/*": ["./src/store/*"],
+            "@store/*": ["./src/store/*"]
         }
     },
-    "include": ["./","./declaration.d.ts"]
+    "include": ["./", "./declaration.d.ts"]
 }
