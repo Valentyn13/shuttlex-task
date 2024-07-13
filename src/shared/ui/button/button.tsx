@@ -13,7 +13,7 @@ const Button: FC<ButtonProps> = ({ style, children, onPress }) => {
             onPress={onPress}
             style={({ pressed }) => [
                 styles.baseButton,
-                pressed && { backgroundColor: 'lightgray' },
+                pressed && { backgroundColor: '#36C2CE' },
                 style,
             ]}
         >
@@ -24,7 +24,7 @@ const Button: FC<ButtonProps> = ({ style, children, onPress }) => {
 
 const styles = StyleSheet.create({
     baseButton: {
-        backgroundColor: 'gray',
+        backgroundColor: '#478CCF',
         paddingVertical: 8,
         paddingHorizontal: 16,
         justifyContent: 'center',

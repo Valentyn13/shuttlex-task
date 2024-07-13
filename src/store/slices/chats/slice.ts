@@ -1,4 +1,4 @@
-import { createSlice, isAnyOf } from '@reduxjs/toolkit';
+import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit';
 
 import {
     Chat,
@@ -27,7 +27,23 @@ const initialState: State = {
 const { reducer, actions } = createSlice({
     initialState,
     name: SliceName.CHATS,
-    reducers: {},
+    reducers: {
+        addMessage: (
+            state,
+            action: PayloadAction<{
+                message: string;
+                user: UserWithoutPassword;
+            }>,
+        ) => {
+            const newMessage = {
+                id: new Date().valueOf(),
+                user: action.payload.user,
+                message: action.payload.message,
+            };
+
+            state.currentChat?.messages.push(newMessage);
+        },
+    },
     extraReducers(buider) {
         buider.addCase(auth.fulfilled, (state, action) => {
             state.user = action.payload;

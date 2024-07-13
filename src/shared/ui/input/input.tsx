@@ -52,10 +52,10 @@ export const styles = StyleSheet.create({
     },
     border: {
         borderStyle: 'solid',
-        borderWidth: 0.5,
+        borderWidth: 0.8,
         borderColor: '#F1F1F1',
     },
     focused: {
-        borderColor: 'gray',
+        borderColor: '#36C2CE',
     },
 });

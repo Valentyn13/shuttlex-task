@@ -22,7 +22,7 @@ const MainScreen = () => {
         dispatch(getAllChats());
     }, [dispatch]);
     return (
-        <Container>
+        <Container style={{ padding: 15 }}>
             <Text style={styles.headerText}>Avaliable Chats</Text>
             <View style={styles.divider}></View>
             <FlatList
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     chatContainer: {
-        padding: 10,
+        marginVertical: 10,
         flexDirection: 'row',
         alignItems: 'center',
         gap: 10,
