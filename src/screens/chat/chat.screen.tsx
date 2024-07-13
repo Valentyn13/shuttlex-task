@@ -39,6 +39,20 @@ export const ChatScreen = () => {
         setNewMssage(message);
     };
 
+    const handleJoinChat = () => {
+        if (user) {
+            dispatch(chatsActions.joinToChat(user));
+            dispatch(
+                chatsActions.addMessage({
+                    message: `${user.name} has joined the chat`,
+                    user: {
+                        id: 7777,
+                        name: 'system',
+                    },
+                }),
+            );
+        }
+    };
     const handleAddMessage = () => {
         if (user && newMessage.trim() !== '') {
             dispatch(
@@ -53,10 +67,9 @@ export const ChatScreen = () => {
             if (flatListRef.current) {
                 flatListRef.current.scrollToEnd();
             }
-        }, 0);
+        }, 120);
     };
-    //const isMember = chat?.members.find((member) => member.id === user?.id);
-    const isMember = true;
+    const isMember = chat?.members.find((member) => member.id === user?.id);
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
@@ -201,7 +214,7 @@ export const ChatScreen = () => {
                         </Button>
                     </View>
                 ) : (
-                    <Button style={styles.joinChatBtn} onPress={() => {}}>
+                    <Button style={styles.joinChatBtn} onPress={handleJoinChat}>
                         <Text
                             style={{
                                 color: 'white',
@@ -293,7 +306,7 @@ const styles = StyleSheet.create({
     },
     joinChatBtn: {
         borderRadius: 0,
-        backgroundColor: 'blue',
+        backgroundColor: '#3FA2F6',
         height: '100%',
     },
 });

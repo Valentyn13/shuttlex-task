@@ -43,6 +43,10 @@ const { reducer, actions } = createSlice({
 
             state.currentChat?.messages.push(newMessage);
         },
+
+        joinToChat: (state, action: PayloadAction<UserWithoutPassword>) => {
+            state.currentChat?.members.push(action.payload);
+        },
     },
     extraReducers(buider) {
         buider.addCase(auth.fulfilled, (state, action) => {

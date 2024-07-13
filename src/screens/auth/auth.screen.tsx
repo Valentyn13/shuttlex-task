@@ -48,7 +48,7 @@ export const AuthScreen = () => {
                     placeholder="Enter your password"
                 />
                 <Button style={styles.button} onPress={handleLogIn}>
-                    <Text>Log In</Text>
+                    <Text style={{ color: 'white', fontSize: 18 }}>Log In</Text>
                 </Button>
             </View>
         </Container>
