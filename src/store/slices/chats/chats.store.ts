@@ -1,14 +1,16 @@
 import {
-    auth,
     createChat,
     deleteChat,
     getAllChats,
     getChat,
+    login,
+    register,
 } from './actions.ts';
 import { actions } from './slice.ts';
 const allActions = {
     ...actions,
-    auth,
+    login,
+    register,
     createChat,
     deleteChat,
     getAllChats,

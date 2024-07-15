@@ -1,12 +1,16 @@
 import { Provider } from 'react-redux';
 import { Slot } from 'expo-router';
 
+import { SocketProvider } from '../src/context/socket';
+
 import { store } from '@store/index';
 
 const TabsLayout = () => {
     return (
         <Provider store={store.instance}>
-            <Slot />
+            <SocketProvider>
+                <Slot />
+            </SocketProvider>
         </Provider>
     );
 };

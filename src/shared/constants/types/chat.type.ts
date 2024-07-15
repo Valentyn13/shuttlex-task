@@ -2,9 +2,10 @@ import { Message } from './message.type';
 import { UserWithoutPassword } from './user.type';
 
 export type Chat = {
-    id: number;
+    _id: string;
     name: string;
-    owner: UserWithoutPassword;
+    ownerId: string;
+    ownerName: string;
     members: UserWithoutPassword[];
     messages: Message[];
 };

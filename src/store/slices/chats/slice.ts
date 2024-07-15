@@ -8,7 +8,14 @@ import {
     UserWithoutPassword,
 } from '../../../shared';
 
-import { auth, createChat, deleteChat, getAllChats, getChat } from './actions';
+import {
+    createChat,
+    deleteChat,
+    getAllChats,
+    getChat,
+    login,
+    register,
+} from './actions';
 
 type State = {
     user: UserWithoutPassword | null;
@@ -49,7 +56,11 @@ const { reducer, actions } = createSlice({
         },
     },
     extraReducers(buider) {
-        buider.addCase(auth.fulfilled, (state, action) => {
+        buider.addCase(login.fulfilled, (state, action) => {
+            state.user = action.payload;
+            state.state = SliceState.SUCCESS;
+        });
+        buider.addCase(register.fulfilled, (state, action) => {
             state.user = action.payload;
             state.state = SliceState.SUCCESS;
         });
@@ -64,7 +75,7 @@ const { reducer, actions } = createSlice({
         });
         buider.addCase(deleteChat.fulfilled, (state, action) => {
             state.chats = state.chats.filter(
-                (chat) => chat.id !== action.payload,
+                (chat) => chat._id !== action.payload,
             );
             state.state = SliceState.SUCCESS;
         });
@@ -74,7 +85,8 @@ const { reducer, actions } = createSlice({
         });
         buider.addMatcher(
             isAnyOf(
-                auth.pending,
+                login.pending,
+                register.pending,
                 getAllChats.pending,
                 getChat.pending,
                 deleteChat.pending,
@@ -86,7 +98,8 @@ const { reducer, actions } = createSlice({
         );
         buider.addMatcher(
             isAnyOf(
-                auth.rejected,
+                login.rejected,
+                register.rejected,
                 getAllChats.rejected,
                 getChat.rejected,
                 deleteChat.rejected,

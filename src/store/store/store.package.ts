@@ -8,6 +8,7 @@ import {
 import { chatReducer, exampleReducer } from '../slices';
 
 import { chatsApi, exampleApi } from '@api/index.ts';
+import { userApi } from '@api/user/user-api';
 
 export type RootReducer = {
     example: ReturnType<typeof exampleReducer>;
@@ -17,6 +18,7 @@ export type RootReducer = {
 type ExtraArguments = {
     exampleApi: typeof exampleApi;
     chatsApi: typeof chatsApi;
+    userApi: typeof userApi;
 };
 
 export class Store {
@@ -49,6 +51,7 @@ export class Store {
         return {
             exampleApi,
             chatsApi,
+            userApi,
         };
     }
 }

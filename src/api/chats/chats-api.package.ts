@@ -5,7 +5,6 @@ import {
     ContentType,
     HTTP,
     HttpApi,
-    User,
 } from '../../shared';
 
 type Constructor = {
@@ -18,21 +17,9 @@ export class ChatsApi extends HttpApi {
         super({ baseUrl, http });
     }
 
-    public async auth() {
-        const response = await this.load(
-            this.getFullEndpoint(ApiEndpoints.AUTH),
-            {
-                method: 'POST',
-                contentType: ContentType.JSON,
-                hasAuth: false,
-            },
-        );
-        return await response.json<User>();
-    }
-
     public async getAllChats() {
         const response = await this.load(
-            this.getFullEndpoint(ApiEndpoints.CHATS),
+            this.getFullEndpoint(ApiEndpoints.ROOT),
             {
                 method: 'GET',
                 contentType: ContentType.JSON,
@@ -42,15 +29,12 @@ export class ChatsApi extends HttpApi {
         return await response.json<ChatWithoutMessagesList>();
     }
 
-    public async getChat() {
-        const response = await this.load(
-            this.getFullEndpoint(ApiEndpoints.CHAT),
-            {
-                method: 'GET',
-                contentType: ContentType.JSON,
-                hasAuth: false,
-            },
-        );
+    public async getChat(id: string) {
+        const response = await this.load(this.getFullEndpoint(`/${id}`), {
+            method: 'GET',
+            contentType: ContentType.JSON,
+            hasAuth: false,
+        });
         return await response.json<Chat>();
     }
 

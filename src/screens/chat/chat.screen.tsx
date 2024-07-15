@@ -11,7 +11,9 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+
+import { useSocket } from '../../context/socket';
 
 import { chatsActions } from '@store/slices';
 
@@ -21,15 +23,18 @@ import { Input } from '@shared/ui/input/input';
 export const ChatScreen = () => {
     const dispatch = useAppDispatch();
     const router = useRouter();
+    const { socket } = useSocket();
+    const { id } = useLocalSearchParams();
 
     const chat = useAppSelector((state) => state.chats.currentChat);
     const user = useAppSelector((state) => state.chats.user);
-
     const flatListRef = useRef<FlatList<Message>>(null);
+
     const [newMessage, setNewMssage] = useState('');
+
     useEffect(() => {
-        dispatch(chatsActions.getChat());
-    }, [dispatch]);
+        dispatch(chatsActions.getChat(id as string));
+    }, [dispatch, id]);
 
     const handleGoBack = () => {
         router.back();
@@ -42,32 +47,26 @@ export const ChatScreen = () => {
     const handleJoinChat = () => {
         if (user) {
             dispatch(chatsActions.joinToChat(user));
-            dispatch(
-                chatsActions.addMessage({
-                    message: `${user.name} has joined the chat`,
-                    user: {
-                        id: 7777,
-                        name: 'system',
-                    },
-                }),
-            );
+            socket?.emit('MANUAL_JOIN', { chatID: chat?._id, member: user });
+            socket?.emit('ADD_MESSAGE', {
+                message: `${user.name} joined the chat`,
+                user: {
+                    id: '7777',
+                    name: 'system',
+                },
+                chatID: chat?._id,
+            });
         }
     };
     const handleAddMessage = () => {
         if (user && newMessage.trim() !== '') {
-            dispatch(
-                chatsActions.addMessage({
-                    message: newMessage,
-                    user,
-                }),
-            );
+            socket?.emit('ADD_MESSAGE', {
+                message: newMessage,
+                user,
+                chatID: chat?._id,
+            });
             setNewMssage('');
         }
-        setTimeout(() => {
-            if (flatListRef.current) {
-                flatListRef.current.scrollToEnd();
-            }
-        }, 120);
     };
     const isMember = chat?.members.find((member) => member.id === user?.id);
 
@@ -79,7 +78,7 @@ export const ChatScreen = () => {
                     if (flatListRef.current) {
                         flatListRef.current.scrollToEnd();
                     }
-                }, 40);
+                }, 20);
             },
         );
 
@@ -88,8 +87,45 @@ export const ChatScreen = () => {
         };
     }, []);
 
+    useEffect(() => {
+        if (!socket) return;
+        if (user) {
+            socket?.emit('CHAT_OPEN', { chatID: chat?._id, userID: user.id });
+        }
+    }, [user, socket, chat?._id]);
+
+    useEffect(() => {
+        if (!socket) return;
+
+        socket.on('UPDATE_CHAT', (message: Message) => {
+            dispatch(chatsActions.addMessage(message));
+            console.log(message);
+            setTimeout(() => {
+                if (flatListRef.current) {
+                    flatListRef.current.scrollToEnd();
+                }
+            }, 40);
+        });
+
+        return () => {
+            socket.off('UPDATE_CHAT');
+        };
+    }, [socket, dispatch]);
+
+    useEffect(() => {
+        setTimeout(() => {
+            if (flatListRef.current) {
+                flatListRef.current.scrollToEnd();
+            }
+        }, 60);
+    }, []);
     return (
-        <View>
+        <View
+            style={{
+                flex: 1,
+                flexDirection: 'column',
+            }}
+        >
             <View style={styles.hedearContainer}>
                 <View>
                     <Pressable onPress={handleGoBack}>
@@ -127,7 +163,7 @@ export const ChatScreen = () => {
                         ref={flatListRef}
                         renderItem={({ item }) => {
                             const isMyMessage = item.user.id === user?.id;
-                            const isUserMessage = item.user.id !== 7777;
+                            const isUserMessage = item.user.id !== '7777';
                             return (
                                 <View
                                     style={[
@@ -234,7 +270,8 @@ const styles = StyleSheet.create({
     hedearContainer: {
         width: '100%',
         backgroundColor: 'lightblue',
-        paddingTop: 60,
+        paddingTop: 40,
+        height: 100,
         paddingLeft: 20,
         padding: 8,
         flexDirection: 'row',
@@ -243,7 +280,6 @@ const styles = StyleSheet.create({
     },
     chatDescr: {
         flexDirection: 'row',
-        flex: 1,
         justifyContent: 'flex-start',
         marginLeft: 35,
         gap: 15,
@@ -265,11 +301,9 @@ const styles = StyleSheet.create({
     },
     // Chat styles
     chatSection: {
-        position: 'relative',
         backgroundColor: '#FBEAFF',
-        height: '100%',
         paddingHorizontal: 10,
-        paddingBottom: 174,
+        flex: 1,
     },
     chatAvatar: {
         width: 35,
@@ -298,11 +332,9 @@ const styles = StyleSheet.create({
     },
     // Footer styles
     footer: {
-        position: 'absolute',
-        bottom: 112,
-        left: 0,
-        right: 0,
+        bottom: 0,
         height: 60,
+        //backgroundColor: 'white',
     },
     joinChatBtn: {
         borderRadius: 0,

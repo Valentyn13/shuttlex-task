@@ -9,17 +9,34 @@ import {
     UserWithoutPassword,
 } from '../../../shared/index.ts';
 
-const auth = createAsyncThunk<
+const login = createAsyncThunk<
     User,
-    { name: string; password: number },
+    { name: string; password: string },
     AsyncThunkConfig
->(`${SliceName.CHATS}/auth`, async (data, { extra, rejectWithValue }) => {
+>(`${SliceName.CHATS}/login`, async (data, { extra, rejectWithValue }) => {
     try {
-        const { chatsApi } = extra;
-        const user = await chatsApi.auth();
+        const { userApi } = extra;
+        const user = await userApi.login(data);
 
         return user;
     } catch (error) {
+        console.log(error);
+        return rejectWithValue(`Error, ${JSON.stringify(error)}`);
+    }
+});
+
+const register = createAsyncThunk<
+    User,
+    { name: string; password: string },
+    AsyncThunkConfig
+>(`${SliceName.CHATS}/register`, async (data, { extra, rejectWithValue }) => {
+    try {
+        const { userApi } = extra;
+        const user = await userApi.register(data);
+
+        return user;
+    } catch (error) {
+        console.log(error);
         return rejectWithValue(`Error, ${JSON.stringify(error)}`);
     }
 });
@@ -34,16 +51,17 @@ const getAllChats = createAsyncThunk<
         const chats = await chatsApi.getAllChats();
         return chats;
     } catch (error) {
+        console.log(error);
         return rejectWithValue(`Error, ${JSON.stringify(error)}`);
     }
 });
 
-const getChat = createAsyncThunk<Chat, void, AsyncThunkConfig>(
+const getChat = createAsyncThunk<Chat, string, AsyncThunkConfig>(
     `${SliceName.CHATS}/get`,
-    async (_, { extra, rejectWithValue }) => {
+    async (id, { extra, rejectWithValue }) => {
         try {
             const { chatsApi } = extra;
-            const chats = await chatsApi.getChat();
+            const chats = await chatsApi.getChat(id);
             return chats;
         } catch (error) {
             console.log(error);
@@ -61,9 +79,10 @@ const createChat = createAsyncThunk<
         const { chatsApi } = extra;
         await chatsApi.createChat();
         return {
-            id: new Date().valueOf(),
+            _id: new Date().toISOString(),
             name: data.name,
-            owner: data.user,
+            ownerName: data.user.name,
+            ownerId: data.user.id,
             members: [data.user],
             messages: [],
         };
@@ -72,7 +91,7 @@ const createChat = createAsyncThunk<
     }
 });
 
-const deleteChat = createAsyncThunk<number, number, AsyncThunkConfig>(
+const deleteChat = createAsyncThunk<string, string, AsyncThunkConfig>(
     `${SliceName.CHATS}/delete`,
     async (id, { extra, rejectWithValue }) => {
         try {
@@ -85,4 +104,4 @@ const deleteChat = createAsyncThunk<number, number, AsyncThunkConfig>(
     },
 );
 
-export { auth, createChat, deleteChat, getAllChats, getChat };
+export { createChat, deleteChat, getAllChats, getChat, login, register };

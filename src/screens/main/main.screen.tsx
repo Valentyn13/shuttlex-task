@@ -21,6 +21,7 @@ const MainScreen = () => {
     useEffect(() => {
         dispatch(getAllChats());
     }, [dispatch]);
+
     return (
         <Container style={{ padding: 15 }}>
             <Text style={styles.headerText}>Avaliable Chats</Text>
@@ -33,7 +34,7 @@ const MainScreen = () => {
                             onPress={() =>
                                 router.navigate({
                                     pathname: '/chat/[id]',
-                                    params: { id: item.id },
+                                    params: { id: item._id },
                                 })
                             }
                         >
@@ -62,7 +63,7 @@ const MainScreen = () => {
 
                                     <View>
                                         <Text style={styles.membersText}>
-                                            Owner:{item.owner.name}
+                                            Owner:{item.ownerName}
                                         </Text>
                                     </View>
                                     <View style={styles.line}></View>
