@@ -10,6 +10,7 @@ import {
     View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
@@ -25,23 +26,51 @@ export const ChatScreen = () => {
     const router = useRouter();
     const { socket } = useSocket();
     const { id } = useLocalSearchParams();
+    const flatListRef = useRef<FlatList<Message>>(null);
 
     const chat = useAppSelector((state) => state.chats.currentChat);
     const user = useAppSelector((state) => state.chats.user);
-    const flatListRef = useRef<FlatList<Message>>(null);
 
     const [newMessage, setNewMssage] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const isMember = chat?.members.find((member) => member.id === user?.id);
+    const isOwner = chat?.ownerId === user?.id;
     useEffect(() => {
         dispatch(chatsActions.getChat(id as string));
     }, [dispatch, id]);
 
     const handleGoBack = () => {
+        setIsModalOpen(false);
         router.back();
     };
 
     const handleNewMessageChange = (message: string) => {
         setNewMssage(message);
+    };
+
+    const handleModalOpen = () => {
+        setIsModalOpen(!isModalOpen);
+    };
+
+    const handleDeleteChat = () => {
+        socket?.emit('DELETE_CHAT', chat?._id);
+        setIsModalOpen(false);
+        router.back();
+    };
+    const handleLeaveChat = () => {
+        socket?.emit('ADD_MESSAGE', {
+            message: `${user?.name} has left the chat`,
+            user: {
+                id: '7777',
+                name: 'system',
+            },
+            chatID: chat?._id,
+        });
+
+        socket?.emit('LEFT_CHAT', { userId: user?.id, chatId: chat?._id });
+        setIsModalOpen(false);
+        router.back();
     };
 
     const handleJoinChat = () => {
@@ -68,7 +97,6 @@ export const ChatScreen = () => {
             setNewMssage('');
         }
     };
-    const isMember = chat?.members.find((member) => member.id === user?.id);
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
@@ -107,8 +135,12 @@ export const ChatScreen = () => {
             }, 40);
         });
 
+        socket.on('UPDATE_CHAT_AFTER_DELETION', (chatId: string) => {
+            dispatch(chatsActions.deleteChat(chatId));
+        });
         return () => {
             socket.off('UPDATE_CHAT');
+            socket.off('UPDATE_CHAT_AFTER_DELETION');
         };
     }, [socket, dispatch]);
 
@@ -126,7 +158,12 @@ export const ChatScreen = () => {
                 flexDirection: 'column',
             }}
         >
-            <View style={styles.hedearContainer}>
+            <View
+                style={[
+                    styles.hedearContainer,
+                    { justifyContent: 'space-between' },
+                ]}
+            >
                 <View>
                     <Pressable onPress={handleGoBack}>
                         <Ionicons
@@ -136,7 +173,7 @@ export const ChatScreen = () => {
                         />
                     </Pressable>
                 </View>
-                <View style={styles.chatDescr}>
+                <View style={[styles.chatDescr, {}]}>
                     <View>
                         <Image
                             style={styles.image}
@@ -150,6 +187,46 @@ export const ChatScreen = () => {
                         </Text>
                     </View>
                 </View>
+                {isMember && (
+                    <View style={styles.dropDownContainer}>
+                        <Pressable
+                            style={{
+                                backgroundColor: 'white',
+                                borderRadius: 15,
+                                paddingHorizontal: 6,
+                                paddingVertical: 4,
+                            }}
+                            onPress={handleModalOpen}
+                        >
+                            <MaterialIcons
+                                name="more-vert"
+                                size={24}
+                                color="lightblue"
+                            />
+                        </Pressable>
+                        {isModalOpen && (
+                            <View style={styles.dropDownContent}>
+                                {isOwner ? (
+                                    <Button
+                                        style={{ backgroundColor: 'red' }}
+                                        onPress={handleDeleteChat}
+                                    >
+                                        <Text style={{ color: 'black' }}>
+                                            Delete the chat
+                                        </Text>
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        style={{ backgroundColor: 'orange' }}
+                                        onPress={handleLeaveChat}
+                                    >
+                                        <Text>Leave the chat</Text>
+                                    </Button>
+                                )}
+                            </View>
+                        )}
+                    </View>
+                )}
             </View>
             {chat && (
                 <KeyboardAvoidingView
@@ -276,12 +353,10 @@ const styles = StyleSheet.create({
         padding: 8,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
     },
     chatDescr: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        marginLeft: 35,
         gap: 15,
     },
     chatName: {
@@ -291,6 +366,21 @@ const styles = StyleSheet.create({
         letterSpacing: 0.4,
         lineHeight: 28,
     },
+    dropDownContainer: {
+        position: 'relative',
+    },
+    dropDownContent: {
+        position: 'absolute',
+        height: 50,
+        bottom: 0,
+        left: -200,
+        width: 200,
+        borderRadius: 9,
+        transform: [{ translateY: 10 }],
+        backgroundColor: 'white',
+        padding: 8,
+        gap: 5,
+    },
     members: {
         fontSize: 12,
         color: 'gray',
@@ -299,7 +389,6 @@ const styles = StyleSheet.create({
         width: 35,
         height: 35,
     },
-    // Chat styles
     chatSection: {
         backgroundColor: '#FBEAFF',
         paddingHorizontal: 10,
@@ -330,11 +419,9 @@ const styles = StyleSheet.create({
         color: 'darkgray',
         fontSize: 13,
     },
-    // Footer styles
     footer: {
         bottom: 0,
         height: 60,
-        //backgroundColor: 'white',
     },
     joinChatBtn: {
         borderRadius: 0,

@@ -8,6 +8,7 @@ import {
     UserWithoutPassword,
 } from '../../../shared';
 
+import { ChatWithoutMessages } from './../../../shared/constants/types/chat.type';
 import {
     createChat,
     deleteChat,
@@ -54,6 +55,33 @@ const { reducer, actions } = createSlice({
         joinToChat: (state, action: PayloadAction<UserWithoutPassword>) => {
             state.currentChat?.members.push(action.payload);
         },
+
+        addChat: (state, action: PayloadAction<ChatWithoutMessages>) => {
+            state.chats = [...state.chats, action.payload];
+        },
+        deleteChat: (state, action: PayloadAction<string>) => {
+            state.chats = state.chats.filter(
+                (chat) => chat._id !== action.payload,
+            );
+        },
+
+        decreaseMember: (
+            state,
+            action: PayloadAction<{ chatId: string; userId: string }>,
+        ) => {
+            state.chats = state.chats.map((chat) => {
+                if (chat._id === action.payload.chatId) {
+                    const newMembers = chat.members.filter(
+                        (member) => member.id === action.payload.userId,
+                    );
+                    return {
+                        ...chat,
+                        members: newMembers,
+                    };
+                }
+                return chat;
+            });
+        },
     },
     extraReducers(buider) {
         buider.addCase(login.fulfilled, (state, action) => {
@@ -70,7 +98,6 @@ const { reducer, actions } = createSlice({
         });
         buider.addCase(getChat.fulfilled, (state, action) => {
             state.currentChat = action.payload;
-            console.log('success');
             state.state = SliceState.SUCCESS;
         });
         buider.addCase(deleteChat.fulfilled, (state, action) => {
