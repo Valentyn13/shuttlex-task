@@ -50,6 +50,7 @@ export const ChatScreen = () => {
     };
 
     const handleModalOpen = () => {
+        if (!isMember) return;
         setIsModalOpen(!isModalOpen);
     };
 
@@ -187,46 +188,44 @@ export const ChatScreen = () => {
                         </Text>
                     </View>
                 </View>
-                {isMember && (
-                    <View style={styles.dropDownContainer}>
-                        <Pressable
-                            style={{
-                                backgroundColor: 'white',
-                                borderRadius: 15,
-                                paddingHorizontal: 6,
-                                paddingVertical: 4,
-                            }}
-                            onPress={handleModalOpen}
-                        >
-                            <MaterialIcons
-                                name="more-vert"
-                                size={24}
-                                color="lightblue"
-                            />
-                        </Pressable>
-                        {isModalOpen && (
-                            <View style={styles.dropDownContent}>
-                                {isOwner ? (
-                                    <Button
-                                        style={{ backgroundColor: 'red' }}
-                                        onPress={handleDeleteChat}
-                                    >
-                                        <Text style={{ color: 'black' }}>
-                                            Delete the chat
-                                        </Text>
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        style={{ backgroundColor: 'orange' }}
-                                        onPress={handleLeaveChat}
-                                    >
-                                        <Text>Leave the chat</Text>
-                                    </Button>
-                                )}
-                            </View>
-                        )}
-                    </View>
-                )}
+                <View style={styles.dropDownContainer}>
+                    <Pressable
+                        style={{
+                            backgroundColor: 'white',
+                            borderRadius: 15,
+                            paddingHorizontal: 6,
+                            paddingVertical: 4,
+                        }}
+                        onPress={handleModalOpen}
+                    >
+                        <MaterialIcons
+                            name="more-vert"
+                            size={24}
+                            color="lightblue"
+                        />
+                    </Pressable>
+                    {isModalOpen && (
+                        <View style={styles.dropDownContent}>
+                            {isOwner ? (
+                                <Button
+                                    style={{ backgroundColor: 'red' }}
+                                    onPress={handleDeleteChat}
+                                >
+                                    <Text style={{ color: 'black' }}>
+                                        Delete the chat
+                                    </Text>
+                                </Button>
+                            ) : (
+                                <Button
+                                    style={{ backgroundColor: 'orange' }}
+                                    onPress={handleLeaveChat}
+                                >
+                                    <Text>Leave the chat</Text>
+                                </Button>
+                            )}
+                        </View>
+                    )}
+                </View>
             </View>
             {chat && (
                 <KeyboardAvoidingView

@@ -72,7 +72,7 @@ const { reducer, actions } = createSlice({
             state.chats = state.chats.map((chat) => {
                 if (chat._id === action.payload.chatId) {
                     const newMembers = chat.members.filter(
-                        (member) => member.id === action.payload.userId,
+                        (member) => member.id !== action.payload.userId,
                     );
                     return {
                         ...chat,
@@ -81,6 +81,9 @@ const { reducer, actions } = createSlice({
                 }
                 return chat;
             });
+            state.currentChat?.members.filter(
+                (member) => member.id !== action.payload.userId,
+            );
         },
     },
     extraReducers(buider) {
