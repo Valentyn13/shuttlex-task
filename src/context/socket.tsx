@@ -7,6 +7,8 @@ import {
 } from 'react';
 import { io, Socket } from 'socket.io-client';
 
+import { IP_V4 } from '../config';
+
 interface SocketContextType {
     socket: Socket | null;
 }
@@ -22,7 +24,7 @@ interface SocketProviderProps {
 export const SocketProvider = ({ children }: SocketProviderProps) => {
     const [socket, setSocket] = useState<Socket | null>(null);
     useEffect(() => {
-        const newSocket = io('http://192.168.0.139:8001');
+        const newSocket = io(`http://${IP_V4}:8001`);
         setSocket(newSocket);
 
         return () => {

@@ -60,38 +60,26 @@ export const AuthScreen = () => {
                 />
                 {hasAccoutn ? (
                     <Button style={styles.button} onPress={handleLogIn}>
-                        <Text style={{ color: 'white', fontSize: 18 }}>
-                            Log In
-                        </Text>
+                        <Text style={styles.textWhite}>Log In</Text>
                     </Button>
                 ) : (
                     <Button style={styles.button} onPress={handleCreateAccount}>
-                        <Text style={{ color: 'white', fontSize: 18 }}>
-                            Create Account
-                        </Text>
+                        <Text style={styles.textWhite}>Create Account</Text>
                     </Button>
                 )}
             </View>
             {hasAccoutn ? (
-                <View style={{ gap: 6, marginTop: 20 }}>
-                    <Text style={{ color: 'lightgray', fontSize: 19 }}>
-                        Don't have an account?
-                    </Text>
+                <View style={styles.buttonsLayout}>
+                    <Text style={styles.textGray}>Don't have an account?</Text>
                     <Pressable onPress={() => setHasAccount(false)}>
-                        <Text style={{ color: 'lightblue', fontSize: 19 }}>
-                            Create a new one
-                        </Text>
+                        <Text style={styles.blueText}>Create a new one</Text>
                     </Pressable>
                 </View>
             ) : (
-                <View style={{ gap: 6, marginTop: 20 }}>
-                    <Text style={{ color: 'lightgray', fontSize: 19 }}>
-                        Have an account?
-                    </Text>
+                <View style={styles.buttonsLayout}>
+                    <Text style={styles.textGray}>Have an account?</Text>
                     <Pressable onPress={() => setHasAccount(true)}>
-                        <Text style={{ color: 'lightblue', fontSize: 19 }}>
-                            Please Log In
-                        </Text>
+                        <Text style={styles.blueText}>Please Log In</Text>
                     </Pressable>
                 </View>
             )}
@@ -111,5 +99,21 @@ const styles = StyleSheet.create({
     },
     button: {
         height: 50,
+    },
+    buttonsLayout: {
+        gap: 6,
+        marginTop: 20,
+    },
+    textGray: {
+        color: 'lightgray',
+        fontSize: 19,
+    },
+    blueText: {
+        color: '#545ad1',
+        fontSize: 19,
+    },
+    textWhite: {
+        color: 'white',
+        fontSize: 18,
     },
 });
