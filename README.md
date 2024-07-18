@@ -1,21 +1,29 @@
-# PSY HELP
+# Chat App
 
 ## 🏃‍♂️ Simple Start
 
-### To have better experience you should install these extentions to VS Code:
+To develop this chat i use expo and expo-go installed on my phone.
 
--   SVG Previewer;
+## Backend Repo
 
--   EditorConfig for VS Code;
+-   Clone the server repo
 
--   ESLint;
+    ```
+    git clone
+    ```
 
--   Prettier.
+-   Run the backend
+
+    ```
+    npm run server
+    ```
+
+## Frontend Repo
 
 1. Clone the repository, run command:
 
     ```
-    git clone https://gitlab.com/test3600025/psy-help.git
+    git clone
     ```
 
 2. Install dependencies with `npm install` command at the root of the project
@@ -29,6 +37,10 @@
     ```
     npm run start
     ```
+
+4. To connect this project to the backend change **IP_V4** constant in **src/config.ts** file to your nettwork address.
+
+5. You can Logi In to app with username: **Ivan**, password: **1234**
 
 ## 🥊 Code quality
 

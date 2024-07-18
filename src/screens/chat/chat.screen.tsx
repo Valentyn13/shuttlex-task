@@ -1,25 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
-import {
-    FlatList,
-    Image,
-    Keyboard,
-    KeyboardAvoidingView,
-    StyleSheet,
-    Text,
-    View,
-} from 'react-native';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { FlatList, Keyboard, StyleSheet, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { useSocket } from '../../context/socket';
 
 import { ChatHeader } from './chat-header/chat-header';
+import { ChatFooter } from './footer/footer';
+import { Messages } from './messages/messages';
 
 import { chatsActions } from '@store/slices';
 
-import { Button, Message, useAppDispatch, useAppSelector } from '@shared/index';
+import { Message, useAppDispatch, useAppSelector } from '@shared/index';
 import { addChatActionMessage } from '@shared/lib/helpers/generate-system-message-data';
-import { Input } from '@shared/ui/input/input';
 
 export const ChatScreen = () => {
     const dispatch = useAppDispatch();
@@ -166,116 +158,15 @@ export const ChatScreen = () => {
                 handleModalOpen={handleModalOpen}
             />
             {chat && (
-                <KeyboardAvoidingView
-                    keyboardVerticalOffset={60}
-                    behavior="padding"
-                    style={styles.chatSection}
-                >
-                    <FlatList
-                        showsVerticalScrollIndicator={false}
-                        data={chat.messages}
-                        ref={flatListRef}
-                        renderItem={({ item }) => {
-                            const isMyMessage = item.user.id === user?.id;
-                            const isUserMessage = item.user.id !== '7777';
-                            return (
-                                <View
-                                    style={[
-                                        styles.messageContainer,
-                                        isMyMessage && styles.myMessages,
-                                    ]}
-                                >
-                                    {isUserMessage ? (
-                                        <>
-                                            {isMyMessage ? (
-                                                <Image
-                                                    style={styles.chatAvatar}
-                                                    source={require('@assets/myavatar.png')}
-                                                />
-                                            ) : (
-                                                <Image
-                                                    style={styles.chatAvatar}
-                                                    source={require('@assets/avatar.png')}
-                                                />
-                                            )}
-
-                                            <View style={styles.userMessages}>
-                                                <Text
-                                                    style={{
-                                                        marginBottom: 8,
-                                                        color: '#433D8B',
-                                                        fontSize: 14,
-                                                        fontWeight: '700',
-                                                    }}
-                                                >
-                                                    {item.user.name}
-                                                </Text>
-                                                <Text>{item.message}</Text>
-                                            </View>
-                                        </>
-                                    ) : (
-                                        <View
-                                            style={{
-                                                flex: 1,
-                                                justifyContent: 'center',
-                                            }}
-                                        >
-                                            <Text
-                                                style={[styles.systemMessage]}
-                                            >
-                                                {item.message}
-                                            </Text>
-                                        </View>
-                                    )}
-                                </View>
-                            );
-                        }}
-                    />
-                </KeyboardAvoidingView>
+                <Messages user={user} chat={chat} flatListRef={flatListRef} />
             )}
-            <View style={styles.footer}>
-                {isMember ? (
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            paddingHorizontal: 20,
-                            gap: 20,
-                        }}
-                    >
-                        <Input
-                            style={{ flex: 1 }}
-                            value={newMessage}
-                            onChangeText={handleNewMessageChange}
-                        />
-                        <Button
-                            style={{
-                                backgroundColor: 'transparent',
-                                paddingVertical: 0,
-                                paddingHorizontal: 0,
-                            }}
-                            onPress={handleAddMessage}
-                        >
-                            <AntDesign
-                                name="upcircleo"
-                                size={34}
-                                color="#478CCF"
-                            />
-                        </Button>
-                    </View>
-                ) : (
-                    <Button style={styles.joinChatBtn} onPress={handleJoinChat}>
-                        <Text
-                            style={{
-                                color: 'white',
-                                fontSize: 18,
-                            }}
-                        >
-                            Join chat
-                        </Text>
-                    </Button>
-                )}
-            </View>
+            <ChatFooter
+                isMember={!!isMember}
+                newMessage={newMessage}
+                handleNewMessageChange={handleNewMessageChange}
+                handleAddMessage={handleAddMessage}
+                handleJoinChat={handleJoinChat}
+            />
         </View>
     );
 };
@@ -284,45 +175,5 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-    },
-
-    chatSection: {
-        backgroundColor: '#FBEAFF',
-        paddingHorizontal: 10,
-        flex: 1,
-    },
-    chatAvatar: {
-        width: 35,
-        height: 35,
-    },
-    messageContainer: {
-        flexDirection: 'row',
-        gap: 7,
-        alignItems: 'center',
-    },
-    userMessages: {
-        padding: 8,
-        backgroundColor: 'white',
-        color: 'darkqray',
-        marginVertical: 15,
-        borderRadius: 15,
-        alignSelf: 'flex-start',
-    },
-    myMessages: {
-        flexDirection: 'row-reverse',
-    },
-    systemMessage: {
-        textAlign: 'center',
-        color: 'darkgray',
-        fontSize: 13,
-    },
-    footer: {
-        bottom: 0,
-        height: 60,
-    },
-    joinChatBtn: {
-        borderRadius: 0,
-        backgroundColor: '#3FA2F6',
-        height: '100%',
     },
 });
