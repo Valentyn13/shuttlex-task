@@ -10,8 +10,14 @@ import { Messages } from './messages/messages';
 
 import { chatsActions } from '@store/slices';
 
-import { Message, useAppDispatch, useAppSelector } from '@shared/index';
+import {
+    Message,
+    SliceState,
+    useAppDispatch,
+    useAppSelector,
+} from '@shared/index';
 import { addChatActionMessage } from '@shared/lib/helpers/generate-system-message-data';
+import { Loader } from '@shared/ui/loader/loader';
 
 export const ChatScreen = () => {
     const dispatch = useAppDispatch();
@@ -21,8 +27,13 @@ export const ChatScreen = () => {
 
     const flatListRef = useRef<FlatList<Message>>(null);
 
-    const chat = useAppSelector((state) => state.chats.currentChat);
-    const user = useAppSelector((state) => state.chats.user);
+    const {
+        currentChat: chat,
+        user,
+        state,
+    } = useAppSelector((state) => state.chats);
+
+    const isLoading = state === SliceState.LOADING;
 
     const [newMessage, setNewMssage] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -149,6 +160,7 @@ export const ChatScreen = () => {
 
     return (
         <View style={styles.container}>
+            {isLoading && <Loader />}
             <ChatHeader
                 isModalOpen={isModalOpen}
                 isOwner={isOwner}

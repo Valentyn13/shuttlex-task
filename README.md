@@ -9,7 +9,7 @@ To develop this chat i use expo and expo-go installed on my phone.
 -   Clone the server repo
 
     ```
-    git clone
+    git clone https://github.com/Valentyn13/shuttleX-backend.git
     ```
 
 -   Run the backend
@@ -23,7 +23,7 @@ To develop this chat i use expo and expo-go installed on my phone.
 1. Clone the repository, run command:
 
     ```
-    git clone
+    git clone https://github.com/Valentyn13/shuttlex-task.git
     ```
 
 2. Install dependencies with `npm install` command at the root of the project
@@ -38,7 +38,7 @@ To develop this chat i use expo and expo-go installed on my phone.
     npm run start
     ```
 
-4. To connect this project to the backend change **IP_V4** constant in **src/config.ts** file to your nettwork address.
+4. **IMPORTANT!** To connect this project to the backend change **IP_V4** constant in **src/config.ts** file to your nettwork address.
 
 5. You can Logi In to app with username: **Ivan**, password: **1234**
 

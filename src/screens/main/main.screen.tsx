@@ -14,20 +14,24 @@ import { MessageAction } from '@shared/constants/enums/message-action.enum';
 import {
     ChatWithoutMessages,
     Container,
+    SliceState,
     useAppDispatch,
     useAppSelector,
 } from '@shared/index';
 import { generateSystemMessage } from '@shared/lib/helpers/generate-system-message-data';
+import { Loader } from '@shared/ui/loader/loader';
 
 const MainScreen = () => {
     const dispatch = useAppDispatch();
 
     const { socket } = useSocket();
 
-    const { chats, user } = useAppSelector((state) => state.chats);
+    const { chats, user, state } = useAppSelector((state) => state.chats);
 
     const [chatName, setChatName] = useState('');
     const [isNameInputOpen, setIsNameInputOpen] = useState(false);
+
+    const isLoading = state === SliceState.LOADING;
 
     const handleNewName = (name: string) => {
         setChatName(name);
@@ -80,8 +84,9 @@ const MainScreen = () => {
     }, [socket, dispatch]);
 
     return (
-        <Container style={styles.container}>
+        <Container style={[styles.container, isLoading && { padding: 0 }]}>
             <MainHeader />
+            {isLoading && <Loader />}
             <FlatList
                 style={{ flex: 1 }}
                 data={chats}
