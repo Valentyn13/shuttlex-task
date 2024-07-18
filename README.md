@@ -47,6 +47,15 @@ To develop this chat i use expo and expo-go installed on my phone.
 https://github.com/user-attachments/assets/117a0176-0bec-4208-acb3-d517175cd8ba
 
 
+## Features
+
+* Log In/Log Out
+* Craete chats
+* Visit chats
+* Join Chats
+* Write messages
+* Leave chats
+* Delete chats
 
 ## 🥊 Code quality
 
