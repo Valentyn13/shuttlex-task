@@ -10,6 +10,7 @@ import { Messages } from './messages/messages';
 
 import { chatsActions } from '@store/slices';
 
+import { MessageAction } from '@shared/constants/enums/message-action.enum';
 import {
     Message,
     SliceState,
@@ -69,7 +70,11 @@ export const ChatScreen = () => {
         if (user && chat) {
             socket?.emit(
                 'ADD_MESSAGE',
-                addChatActionMessage(user.name, chat._id),
+                addChatActionMessage(
+                    user.name,
+                    chat._id,
+                    MessageAction.LEAVE_CHAT,
+                ),
             );
 
             socket?.emit('LEFT_CHAT', { userId: user.id, chatId: chat._id });
@@ -87,7 +92,11 @@ export const ChatScreen = () => {
             socket?.emit('MANUAL_JOIN', { chatID: chat._id, member: user });
             socket?.emit(
                 'ADD_MESSAGE',
-                addChatActionMessage(user.name, chat._id),
+                addChatActionMessage(
+                    user.name,
+                    chat._id,
+                    MessageAction.JOIN_CHAT,
+                ),
             );
         }
     };

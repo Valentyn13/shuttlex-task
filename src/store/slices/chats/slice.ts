@@ -85,6 +85,9 @@ const { reducer, actions } = createSlice({
                 (member) => member.id !== action.payload.userId,
             );
         },
+        logOut: (state) => {
+            state.user = null;
+        },
     },
     extraReducers(buider) {
         buider.addCase(login.fulfilled, (state, action) => {

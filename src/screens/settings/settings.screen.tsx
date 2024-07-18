@@ -1,37 +1,37 @@
-import { useEffect, useState } from 'react';
-import { Button, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
 
-import { exampleActions } from '@store/index';
+import { chatsActions } from '@store/slices';
 
-import {
-    asyncStorage,
-    AsyncStorageKey,
-    useAppDispatch,
-    useAppSelector,
-} from '@shared/index';
+import { Button } from '@shared/index';
+import { useAppDispatch } from '@shared/index';
 
 const SettingsScreen = () => {
-    const [token, setToken] = useState<string>('');
     const dispatch = useAppDispatch();
-    const data = useAppSelector((state) => state.example.data);
+    const router = useRouter();
 
-    useEffect(() => {
-        dispatch(exampleActions.getExampleData());
-        void asyncStorage.setItem(AsyncStorageKey.TOKEN, 'test-token');
-    }, [dispatch]);
-    const handlePressButton = async () => {
-        const token = await asyncStorage.getItem(AsyncStorageKey.TOKEN);
-        if (token) {
-            setToken(token);
-        }
+    const handleLogOut = () => {
+        dispatch(chatsActions.logOut());
+        router.replace('/');
     };
     return (
-        <View style={{ backgroundColor: 'white', flex: 1 }}>
-            <Text>Redux Test: {token}</Text>
-            <Text>{data && JSON.stringify(data, null, 2)}</Text>
-            <Button title="Get token" onPress={handlePressButton} />
+        <View style={styles.container}>
+            <Button style={styles.button} onPress={handleLogOut}>
+                <Text>Log out</Text>
+            </Button>
         </View>
     );
 };
 
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: 'white',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    button: {
+        width: 200,
+    },
+});
 export { SettingsScreen };
